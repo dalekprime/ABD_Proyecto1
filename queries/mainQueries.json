@@ -1,0 +1,42 @@
+{
+    "1":{
+        "desc": "Listar tablas e índices en el esquema streaming",
+        "query": "SELECT t.name AS Tabla, ISNULL(i.name, 'Sin Indice') AS Indice FROM sys.schemas AS s JOIN sys.tables AS t ON t.schema_id = s.schema_id LEFT JOIN sys.indexes AS i ON i.object_id = t.object_id WHERE s.name = 'streaming';"
+    },
+    "2":{
+        "desc": "Cantidad de índices por tabla",
+        "query": "SELECT t.name AS Tabla, count(i.index_id) AS Cantidad_Indices FROM sys.schemas AS s JOIN sys.tables AS t ON t.schema_id = s.schema_id LEFT JOIN sys.indexes AS i ON i.object_id = t.object_id WHERE s.name = 'streaming' GROUP BY t.name;"
+    },
+    "3":{
+        "desc": "Restricciones existentes en el esquema",
+        "query": "SELECT c.name AS Nombre, t.name AS Tabla, c.type_desc AS Descripcion FROM sys.objects AS c JOIN sys.tables AS t ON t.object_id = c.parent_object_id JOIN sys.schemas AS s ON t.schema_id = s.schema_id WHERE s.name = 'streaming';"
+    },
+    "4":{
+        "desc": "Detalle de columnas por índice, unicidad y tipo",
+        "query": "SELECT i.name AS Indice, t.name AS Tabla, c.name AS Columna, i.is_unique AS Es_Unico, i.type_desc AS Tipo_Indice  FROM sys.indexes AS i JOIN sys.index_columns AS ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id JOIN sys.tables AS t ON i.object_id = t.object_id JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE s.name = 'streaming';"
+    },
+    "5":{
+        "desc": "Triggers del esquema, estado y tabla asociada",
+        "query": "SELECT tr.name AS Trigger_Name, tr.type_desc AS Tipo, tr.is_disabled AS Esta_Deshabilitado, t.name AS Tabla FROM sys.triggers AS tr JOIN sys.tables AS t ON t.object_id = tr.parent_id JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE s.name = 'streaming';"
+    },
+    "6":{
+        "desc": "Tamaño ocupado por cada tabla",
+        "query": "SELECT t.name AS Tabla, SUM(a.total_pages) * 8 * 1024 AS Bytes FROM sys.tables AS t JOIN sys.indexes AS i ON t.object_id = i.object_id JOIN sys.partitions AS p ON i.object_id = p.object_id AND i.index_id = p.index_id JOIN sys.allocation_units AS a ON p.partition_id = a.container_id JOIN sys.schemas AS s ON t.schema_id = s.schema_id WHERE s.name = 'streaming' GROUP BY t.name;"
+    },
+    "7":{
+        "desc": "Tamaño estimado de cada registro",
+        "query": "SELECT  t.name AS Tabla, SUM(c.max_length) AS Bytes FROM sys.tables AS t JOIN sys.columns AS c ON t.object_id = c.object_id JOIN sys.schemas AS s ON t.schema_id = s.schema_id WHERE s.name = 'streaming' GROUP BY t.name;"
+    },
+    "8":{
+        "desc": "Tamaño de cada columna en bytes",
+        "query": "SELECT t.name AS Tabla, c.name AS Columna, ty.name AS Tipo_Dato, c.max_length AS Bytes FROM sys.tables AS t JOIN sys.columns AS c ON t.object_id = c.object_id JOIN sys.types AS ty ON c.user_type_id = ty.user_type_id JOIN sys.schemas AS s ON t.schema_id = s.schema_id WHERE s.name = 'streaming';"
+    },
+    "9":{
+        "desc": "Factor de bloqueo calculado desde el Diccionario",
+        "query": "SELECT t.name AS Tabla, SUM(c.max_length) AS Bytes,FLOOR(8192.0 / SUM(c.max_length)) AS Factor_Bloqueo FROM sys.tables AS t JOIN sys.columns AS c ON t.object_id = c.object_id JOIN sys.schemas AS s ON t.schema_id = s.schema_id WHERE s.name = 'streaming' GROUP BY t.name;"
+    },
+    "10":{
+        "desc": "Auditoría para costo de consultas",
+        "query": ""
+    }
+}
