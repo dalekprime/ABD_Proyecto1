@@ -1,1 +1,0 @@
-= "queries/mainQueries.json"
