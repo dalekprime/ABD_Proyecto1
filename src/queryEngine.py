@@ -70,7 +70,15 @@ with st.sidebar:
     st.title("StreamUCV")
     st.markdown("---")
     options = list(queries.keys()) if queries else ["Sin datos"]
-    actualSelection = st.selectbox("Seleccionar Requerimiento:", options)
+    def formatMenu(key):
+        if key == "Sin datos": return key
+        desc = queries[key].get("desc", "Sin descripción")
+        text = f"{key} - {desc[:45]}..." if len(desc) > 45 else f"{key} - {desc}"
+        return text
+    actualSelection = st.selectbox(
+        "Seleccionar Requerimiento:", 
+        options=options,
+        format_func=formatMenu)
     st.markdown("---")
     exec = st.button("Consultar", type="primary", use_container_width=True)
 #Central Panel
