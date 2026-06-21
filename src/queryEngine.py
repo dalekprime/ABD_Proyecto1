@@ -55,5 +55,5 @@ def queryLoader(path: str) -> dict:
 actualConnection = connectToDB()
 queryList = queryLoader(QUERIES_PATH)
 if actualConnection:
-    print(makeQuery(actualConnection, queryList["8"]["query"]), queryList["8"]["desc"])
+    print(makeQuery(actualConnection, queryList["10"]["query"]), queryList["10"]["desc"])
     actualConnection.close()

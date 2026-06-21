@@ -37,6 +37,6 @@
     },
     "10":{
         "desc": "Auditoría para costo de consultas",
-        "query": ""
+        "query": "SELECT t.name AS Tabla, c.name AS Columna, MAX(CASE WHEN ic.index_id IS NOT NULL THEN 'SI' ELSE 'NO' END) AS Tiene_Indice, (SELECT SUM(a.used_pages) FROM sys.partitions p JOIN sys.allocation_units a ON p.partition_id = a.container_id WHERE p.object_id = t.object_id AND p.index_id IN (0,1)) AS Paginas_Tabla FROM sys.tables t JOIN sys.columns c ON t.object_id = c.object_id LEFT JOIN sys.index_columns ic ON c.object_id = ic.object_id AND c.column_id = ic.column_id JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE s.name = 'streaming' GROUP BY t.name, c.name, t.object_id;"
     }
 }
