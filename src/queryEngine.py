@@ -2,7 +2,6 @@ import pyodbc
 import json
 
 #Global Variables
-
 SERVER = "localhost"
 DATABASE = "StreamUCV"
 USERNAME = "sa"
@@ -55,5 +54,5 @@ def queryLoader(path: str) -> dict:
 actualConnection = connectToDB()
 queryList = queryLoader(QUERIES_PATH)
 if actualConnection:
-    print(makeQuery(actualConnection, queryList["10"]["query"]), queryList["10"]["desc"])
+    print(makeQuery(actualConnection, queryList["10"]["query"]))
     actualConnection.close()
